@@ -1,0 +1,10 @@
+tensorflow-gpu==1.4.0
+keras==2.2.2
+pydot
+h5py==2.10.0
+
+# Application wise
+simpleitk
+photutils
+tifffile
+libtiff
