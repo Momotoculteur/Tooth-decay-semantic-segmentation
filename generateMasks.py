@@ -33,6 +33,7 @@ test = {
     'g': 255,
     'b': 0
 }
+
 COLOR_DICT = np.array([carrie, test])
 
 with open(labels) as json_file:
