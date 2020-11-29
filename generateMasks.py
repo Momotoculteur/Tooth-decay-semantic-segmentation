@@ -1,6 +1,6 @@
 import numpy as np
 from glob import glob
-from utils import pairwise
+from utils import pairwise, getPaletteColors
 from skimage.segmentation import mark_boundaries
 from tqdm import tqdm
 import os
@@ -34,7 +34,8 @@ test = {
     'b': 0
 }
 
-COLOR_DICT = np.array([carrie, test])
+COLOR_DICT = getPaletteColors()
+print(COLOR_DICT)
 
 with open(labels) as json_file:
     data = json.load(json_file)
@@ -56,21 +57,21 @@ with open(labels) as json_file:
                     res.append((b, a))
 
                 tmpR = polygon2mask((height, width, 1), res).astype(int)
-                tmpR[tmpR == 1] = COLOR_DICT[item['classId']-1]['r']
+                tmpR[tmpR == 1] = COLOR_DICT[item['classId']-1]['colors']['r']
                 tmpR[tmpR == 0] = 0
                 mask[:, :, 0] = np.maximum(mask[:, :, 0], tmpR[:, :, 0])
 
                 tmpG = polygon2mask((height, width, 1), res).astype(int)
-                tmpG[tmpG == 1] = COLOR_DICT[item['classId']-1]['g']
+                tmpG[tmpG == 1] = COLOR_DICT[item['classId']-1]['colors']['g']
                 tmpG[tmpG == 0] = 0
                 mask[:, :, 1] = np.maximum(mask[:, :, 1], tmpG[:, :, 0])
 
                 tmpB = polygon2mask((height, width, 1), res).astype(int)
-                tmpB[tmpB == 1] = COLOR_DICT[item['classId']-1]['b']
+                tmpB[tmpB == 1] = COLOR_DICT[item['classId']-1]['colors']['b']
                 tmpB[tmpB == 0] = 0
                 mask[:, :, 2] = np.maximum(mask[:, :, 2], tmpB[:, :, 0])
 
-        cv2.imwrite(currentImgPathSave, mask)
+        cv2.imwrite(currentImgPathSave, cv2.cvtColor(mask, cv2.COLOR_RGB2BGR))
 
         # Afficher un mask
         #plt.imshow(mask)

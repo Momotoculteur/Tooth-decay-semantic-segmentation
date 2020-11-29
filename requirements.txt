@@ -11,3 +11,4 @@ libtiff
 tqdm
 matplotlib
 opencv-python
+pandas
