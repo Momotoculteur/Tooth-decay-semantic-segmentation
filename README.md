@@ -1,5 +1,19 @@
 # Tooth Decay Semantic Segmentation
 
+## Description
+Logiciel de détection, localisation & segmentation de carries sur des radiographies dentaires.  
+  
+Basé sur le réseau de neuronnes U-Net++.  
+
+
+
+## Installation
+1. Cloner le répo :  
+`$ git clone https://github.com/Momotoculteur/Tooth-decay-semantic-segmentation.git`
+
+2. Installer les modules externes :  
+`pip install -r requirements.txt`
+
 ## Remerciements
 ```
 @article{zhou2019unetplusplus,
@@ -18,3 +32,8 @@
   publisher={Springer}
 }
 ```
+
+## Licence
+Copyright (c) 2020 Bastien MAURICE & Dr.Van-Hoan NGUYEN
+
+This project is licensed under the terms of the MIT [license](LICENSE).
