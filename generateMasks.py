@@ -35,7 +35,6 @@ test = {
 }
 
 COLOR_DICT = getPaletteColors()
-print(COLOR_DICT)
 
 with open(labels) as json_file:
     data = json.load(json_file)

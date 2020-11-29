@@ -25,7 +25,6 @@ def getPaletteColors():
     for index, row in df.iterrows():
 
         r,g,b = hexaToRgb(row['color'])
-        print(r,g,b)
         colors.append({
             'id': row['id'],
             'colors': {
