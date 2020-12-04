@@ -1,8 +1,7 @@
 from segmentation_models import Xnet, Unet
-from keras.callbacks import ModelCheckpoint,CSVLogger,EarlyStopping
+from keras.callbacks import ModelCheckpoint,CSVLogger,EarlyStopping,ReduceLROnPlateau
 import os
-from customLoss import bce_dice_loss
-from customMetric import my_iou_metric
+
 from customGenerator import trainGenerator, validationGenerator
 
 # HYPER PARAMS
@@ -36,28 +35,28 @@ STEP_SIZE_VALID = SAMPLE_VALID / BATCH_SIZE
 #VALIDATION_STEPS = len(os.listdir((os.path.join(val_path, "images")))) // batch_size
 
 #metrics = ["acc", tf.keras.metrics.Recall(), tf.keras.metrics.Precision(), iou]
-# CALLBACK sauvegarde model
+
+
+# CALLBACK
 savemodelCallback = ModelCheckpoint(DIR_TRAINED_MODEL,
                                       verbose=1,
                                       save_best_only=True,
                                       save_weights_only=False,
                                       mode='auto',
                                       period=1,
-                                      monitor='binary_accuracy')
+                                      monitor='val_binary_accuracy')
                                       #monitor='val_acc')
-# TENSORBOARD CALLBACL
 #logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
-# CSV METRICS CALLBACK
 csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=True, separator=',')
-# EARLY STOP CALLBACK
-earlyStopping = EarlyStopping(verbose=1,monitor='binary_accuracy', min_delta=0, patience=5, mode='auto')
-
+earlyStopping = EarlyStopping(verbose=1,monitor='val_loss', min_delta=0, patience=10, mode='auto')
+reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
+                              patience=5, min_lr=1e-6)
 
 # COMPILATION MODEL
-model = Unet(backbone_name='vgg16',
-             encoder_weights=None,
+model = Xnet(backbone_name='resnet50',
+             encoder_weights='imagenet',
              decoder_block_type='transpose',
-             classes=3)
+             classes=1)
 #model.compile('Adam', 'binary_crossentropy', ['binary_accuracy'])
 model.compile(optimizer='Adam',
               loss='binary_crossentropy',
@@ -78,7 +77,7 @@ model.fit_generator(generator=trainGen,
                     validation_data=validationGen,
                     validation_steps=STEP_SIZE_VALID,
                     epochs=EPOCH,
-                    callbacks=[csv_logger, savemodelCallback, earlyStopping])
+                    callbacks=[csv_logger, savemodelCallback, earlyStopping,reduceLearningrate])
 
 
 # TRAIN NUMPY FILES

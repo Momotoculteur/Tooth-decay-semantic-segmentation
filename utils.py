@@ -37,6 +37,24 @@ def getPaletteColors():
 
     return np.array(colors)
 
+def mask2img(mask):
+    palette = {
+        0: (0, 0, 0),
+        1: (255, 0, 0),
+        2: (0, 255, 0),
+        3: (0, 0, 255),
+        4: (0, 255, 255),
+        .... # repeat for all your classes
+    }
+    rows = mask.shape[0]
+    cols = mask.shape[1]
+    image = np.zeros((rows, cols, 3), dtype=np.uint8)
+    for j in range(rows):
+        for i in range(cols):
+            image[j, i] = palette[np.argmax(mask[j, i])]
+    return image
+
+
 def main():
     getPaletteColors()
 

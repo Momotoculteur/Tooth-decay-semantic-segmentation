@@ -14,7 +14,7 @@ import matplotlib.cm
 from skimage.draw import polygon2mask
 from scipy.ndimage.morphology import binary_fill_holes as imfill
 import cv2
-
+import sys
 
 pathImgSrc = "data\\img\\ori"
 pathImgDst = "data\\img\\mask"
@@ -45,7 +45,10 @@ with open(labels) as json_file:
         currentImgPathSave = os.path.join(dirImgDst, currentImg)
         im = Image.open(currentImgPath)
         width, height = im.size
-        mask = np.zeros(shape=(height, width, 3), dtype=np.uint8)
+
+        # METHODE CREER MASK V1
+        mask = np.zeros(shape=(height, width, 1), dtype=np.uint8)
+
 
         # Pour chaque carrie dans une radio
         for item in data[currentImg]:
@@ -55,22 +58,16 @@ with open(labels) as json_file:
                 for a, b in pairwise(item['points']):
                     res.append((b, a))
 
+                # METHODE CREER MASK V1
                 tmpR = polygon2mask((height, width, 1), res).astype(int)
-                tmpR[tmpR == 1] = COLOR_DICT[item['classId']-1]['colors']['r']
+                #tmpR[tmpR == 1] = item['classId']
+                tmpR[tmpR == 1] = 255
                 tmpR[tmpR == 0] = 0
                 mask[:, :, 0] = np.maximum(mask[:, :, 0], tmpR[:, :, 0])
 
-                tmpG = polygon2mask((height, width, 1), res).astype(int)
-                tmpG[tmpG == 1] = COLOR_DICT[item['classId']-1]['colors']['g']
-                tmpG[tmpG == 0] = 0
-                mask[:, :, 1] = np.maximum(mask[:, :, 1], tmpG[:, :, 0])
 
-                tmpB = polygon2mask((height, width, 1), res).astype(int)
-                tmpB[tmpB == 1] = COLOR_DICT[item['classId']-1]['colors']['b']
-                tmpB[tmpB == 0] = 0
-                mask[:, :, 2] = np.maximum(mask[:, :, 2], tmpB[:, :, 0])
 
-        cv2.imwrite(currentImgPathSave, cv2.cvtColor(mask, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(currentImgPathSave, mask)
 
         # Afficher un mask
         #plt.imshow(mask)
