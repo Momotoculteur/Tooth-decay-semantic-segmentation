@@ -1,13 +1,23 @@
 from segmentation_models import Xnet, Unet
 from keras.callbacks import ModelCheckpoint,CSVLogger,EarlyStopping,ReduceLROnPlateau
 import os
-
 from customGenerator import trainGenerator, validationGenerator
+from utils import getClassesLabelList
 
+
+######################
+#
 # HYPER PARAMS
+#
+######################
 BATCH_SIZE = 2
 TRAINSIZE_RATIO = 0.8
-COLOR_MODE ="rgb"
+
+CLASSES = getClassesLabelList()
+N_CLASSES = 1 if len(CLASSES) == 1 else (len(CLASSES) + 1)
+FINAL_ACTIVATION_LAYER = 'sigmoid' if N_CLASSES == 1 else 'softmax'
+LOSS = "binary_crossentropy" if N_CLASSES == 1 else "categorical_crossentropy"
+METRICS = "binary_accuracy" if N_CLASSES == 1 else "categorical_accuracy"
 
 TRAIN_PATH = "data/img"
 IMG_DIR_NAME = "ori"
@@ -24,10 +34,9 @@ DIR_TRAINED_LOGS = os.path.join(DIR_LOGS, LOGS_FILE_NAME)
 
 NUM_SAMPLES = len(os.listdir(os.path.join(os.getcwd(), TRAIN_PATH, IMG_DIR_NAME)))
 EPOCH = 999
+
 SAMPLE_TRAIN = int(NUM_SAMPLES * TRAINSIZE_RATIO)
 SAMPLE_VALID = int(NUM_SAMPLES * (1-TRAINSIZE_RATIO))
-
-
 STEP_SIZE_TRAIN = SAMPLE_TRAIN / BATCH_SIZE
 STEP_SIZE_VALID = SAMPLE_VALID / BATCH_SIZE
 
@@ -36,8 +45,11 @@ STEP_SIZE_VALID = SAMPLE_VALID / BATCH_SIZE
 
 #metrics = ["acc", tf.keras.metrics.Recall(), tf.keras.metrics.Precision(), iou]
 
-
+######################
+#
 # CALLBACK
+#
+######################
 savemodelCallback = ModelCheckpoint(DIR_TRAINED_MODEL,
                                       verbose=1,
                                       save_best_only=True,
@@ -52,26 +64,32 @@ earlyStopping = EarlyStopping(verbose=1,monitor='val_loss', min_delta=0, patienc
 reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
                               patience=5, min_lr=1e-6)
 
+######################
+#
+# MODEL
+#
+######################
 # COMPILATION MODEL
 model = Xnet(backbone_name='resnet50',
              encoder_weights='imagenet',
              decoder_block_type='transpose',
-             classes=1)
-#model.compile('Adam', 'binary_crossentropy', ['binary_accuracy'])
+             classes=N_CLASSES,
+             activation=FINAL_ACTIVATION_LAYER)
 model.compile(optimizer='Adam',
-              loss='binary_crossentropy',
-              metrics=['binary_accuracy'])
+              loss=LOSS,
+              metrics=[METRICS])
 
 
 
-# TRAIN GENERATOR
+######################
+#
+# GENERATOR
+#
+######################
 #model_checkpoint = ModelCheckpoint('unet_membrane.hdf5', monitor='loss',verbose=1, save_best_only=True)
 #model.fit_generator(myGene,steps_per_epoch=2000,epochs=5,callbacks=[model_checkpoint])
 trainGen = trainGenerator(TRAIN_PATH, IMG_DIR_NAME, MASK_DIR_NAME, BATCH_SIZE, 0.2)
 validationGen = validationGenerator(TRAIN_PATH, IMG_DIR_NAME, MASK_DIR_NAME, BATCH_SIZE, 0.2)
-
-
-
 model.fit_generator(generator=trainGen,
                     steps_per_epoch=STEP_SIZE_TRAIN,
                     validation_data=validationGen,

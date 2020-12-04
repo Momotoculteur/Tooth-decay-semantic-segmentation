@@ -26,7 +26,13 @@ def isMulticlassDataset():
     else:
         return False
 
-
+def getClassesLabelList():
+    classes = []
+    df = pd.read_json(CLASSES_DEFINICATION_PATH)
+    df = df.sort_values(['id'], ascending=[True])
+    for index, row in df.iterrows():
+        classes.append(row['name'])
+    return classes
 
 def getPaletteColors():
     colors = []
@@ -67,7 +73,7 @@ def mask2img(mask):
 
 def main():
     #getPaletteColors()
-    isMulticlassDataset()
+    getClassesLabelList()
 
 if __name__ == '__main__':
     """
