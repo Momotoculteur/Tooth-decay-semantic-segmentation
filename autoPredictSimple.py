@@ -43,7 +43,7 @@ def predict(modelPath,imagePath):
     #Chargement de notre image et traitement
     data = []
     img = Image.open(imagePath).convert('RGB')
-    #img = img.resize(size=(256, 256))
+    img = img.resize(size=(256, 256))
     #img.load()
     #img = img.resize(size=imageSize)
     img = np.asarray(img, dtype=np.float32) / 255.

@@ -59,7 +59,7 @@ savemodelCallback = ModelCheckpoint(DIR_TRAINED_MODEL,
                                       monitor='val_binary_accuracy')
                                       #monitor='val_acc')
 #logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
-csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=True, separator=',')
+csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=False, separator=',')
 earlyStopping = EarlyStopping(verbose=1,monitor='val_loss', min_delta=0, patience=10, mode='auto')
 reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
                               patience=5, min_lr=1e-6)
@@ -70,8 +70,8 @@ reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
 #
 ######################
 # COMPILATION MODEL
-model = Xnet(backbone_name='resnet50',
-             encoder_weights='imagenet',
+model = Unet(backbone_name='vgg16',
+             encoder_weights=None,
              decoder_block_type='transpose',
              classes=N_CLASSES,
              activation=FINAL_ACTIVATION_LAYER)

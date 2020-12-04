@@ -41,7 +41,7 @@ with open(labels) as json_file:
         # Pour chaque carrie dans une radio
         for item in data[currentImg]:
             # points de type polygon ou autre
-            if (item['type'] != "meta"):
+            if (item['type'] == "polygon"):
                 res = []
                 for a, b in pairwise(item['points']):
                     res.append((b, a))
