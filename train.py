@@ -2,8 +2,7 @@ from segmentation_models import Xnet, Unet
 from keras.callbacks import ModelCheckpoint,CSVLogger,EarlyStopping,ReduceLROnPlateau
 import os
 from customGenerator import trainGenerator, validationGenerator
-from utils import getClassesLabelList
-
+from utils import getClassesLabelList, isMulticlassDataset
 
 ######################
 #
@@ -14,10 +13,11 @@ BATCH_SIZE = 2
 TRAINSIZE_RATIO = 0.8
 
 CLASSES = getClassesLabelList()
-N_CLASSES = 1 if len(CLASSES) == 1 else (len(CLASSES) + 1)
+N_CLASSES = 1 if not isMulticlassDataset() else (len(CLASSES) + 1)
 FINAL_ACTIVATION_LAYER = 'sigmoid' if N_CLASSES == 1 else 'softmax'
 LOSS = "binary_crossentropy" if N_CLASSES == 1 else "categorical_crossentropy"
 METRICS = "binary_accuracy" if N_CLASSES == 1 else "categorical_accuracy"
+
 
 TRAIN_PATH = "data/img"
 IMG_DIR_NAME = "ori"

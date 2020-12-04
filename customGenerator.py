@@ -65,12 +65,12 @@ def validationGenerator(trainPath, imageDir, maskDir, batchSize, VAL_SPLIT, seed
 
 def adjustData(img,mask, flag_multi_class=True):
     img = img / 255
-    mask = mask / 255
-    mask[mask > 0.5] = 1
-    mask[mask <= 0.5] = 0
+    #mask = mask / 255
+    #mask[mask > 0.5] = 1
+    #mask[mask <= 0.5] = 0
 
-    plt.imshow(mask[0])
-    plt.show()
+    #plt.imshow(mask[0])
+    #plt.show()
     #img = cv2.imread(img)
     #img = cv2.resize(src=img,dsize=(256,256), interpolation=cv2.INTER_NEAREST)
 

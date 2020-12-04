@@ -28,6 +28,8 @@ def isMulticlassDataset():
 
 def getClassesLabelList():
     classes = []
+    if (isMulticlassDataset()):
+        classes.append('background')
     df = pd.read_json(CLASSES_DEFINICATION_PATH)
     df = df.sort_values(['id'], ascending=[True])
     for index, row in df.iterrows():
