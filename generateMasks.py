@@ -23,18 +23,6 @@ dirImgSrc = os.path.join(os.getcwd(), pathImgSrc)
 dirImgDst = os.path.join(os.getcwd(), pathImgDst)
 labels = os.path.join(os.getcwd(), "data\\label\\annotations.json")
 
-carrie = {
-    'r': 255,
-    'g': 255,
-    'b': 255
-}
-test = {
-    'r': 0,
-    'g': 255,
-    'b': 0
-}
-
-COLOR_DICT = getPaletteColors()
 
 with open(labels) as json_file:
     data = json.load(json_file)
@@ -59,11 +47,9 @@ with open(labels) as json_file:
                     res.append((b, a))
 
                 # METHODE CREER MASK V1
-                tmpR = polygon2mask((height, width, 1), res).astype(int)
-                #tmpR[tmpR == 1] = item['classId']
-                tmpR[tmpR == 1] = 255
-                tmpR[tmpR == 0] = 0
-                mask[:, :, 0] = np.maximum(mask[:, :, 0], tmpR[:, :, 0])
+                tmpMask = polygon2mask((height, width, 1), res).astype(int)
+                tmpMask[tmpMask == 1] = item['classId']
+                mask[:, :, 0] = np.maximum(mask[:, :, 0], tmpMask[:, :, 0])
 
 
 

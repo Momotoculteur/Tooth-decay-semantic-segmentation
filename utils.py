@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+CLASSES_DEFINICATION_PATH = 'data\\label\\classes.json'
+
 def pairwise(it):
     it = iter(it)
     while True:
@@ -16,10 +18,19 @@ def hexaToRgb(codeHexa):
     b_hex = codeHexa[5:7]
     return int(r_hex, 16), int(g_hex, 16), int(b_hex, 16)
 
+def isMulticlassDataset():
+    df = pd.read_json(CLASSES_DEFINICATION_PATH)
+    print(len(df))
+    if(len(df)>1):
+        return True
+    else:
+        return False
+
+
 
 def getPaletteColors():
     colors = []
-    df = pd.read_json('data\\label\\classes.json')
+    df = pd.read_json(CLASSES_DEFINICATION_PATH)
     df = df.sort_values(['id'], ascending=[True])
 
     for index, row in df.iterrows():
@@ -44,7 +55,6 @@ def mask2img(mask):
         2: (0, 255, 0),
         3: (0, 0, 255),
         4: (0, 255, 255),
-        .... # repeat for all your classes
     }
     rows = mask.shape[0]
     cols = mask.shape[1]
@@ -56,8 +66,8 @@ def mask2img(mask):
 
 
 def main():
-    getPaletteColors()
-
+    #getPaletteColors()
+    isMulticlassDataset()
 
 if __name__ == '__main__':
     """
