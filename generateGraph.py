@@ -14,17 +14,17 @@ def displayGraph(pathLog,pathSaveGraph):
     :param pathSaveGraph: chemin de destination pour sauvegarder nos 4 graphiques en jpg
     """
 
-    data = pd.read_csv(pathLog)
+    data = pd.read_csv(pathLog, sep=',')
     print(data)
     # split into input (X) and output (Y) variables
-    #plot(data['epoch'], data['binary_accuracy'], data['val_acc'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
-    plot(data['epoch'], data['binary_accuracy'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
-    #plot(data['epoch'], data['loss'], data['val_loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)
-    plot(data['epoch'], data['loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)
+    plot(data['epoch'], data['binary_accuracy'], data['val_binary_accuracy'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
+    #plot(data['epoch'], data['binary_accuracy'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
+    plot(data['epoch'], data['loss'], data['val_loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)
+    #plot(data['epoch'], data['loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)
 
 
-#def plot(X, Y, Y2, title, xLabel, yLabel, legendLoc, pathSaveGraph):
-def plot(X, Y, title, xLabel, yLabel, legendLoc, pathSaveGraph):
+def plot(X, Y, Y2, title, xLabel, yLabel, legendLoc, pathSaveGraph):
+#def plot(X, Y, title, xLabel, yLabel, legendLoc, pathSaveGraph):
     """
     # Fonction d'affichage de graph
     :param X: correspond au nombre d'époch
@@ -39,7 +39,7 @@ def plot(X, Y, title, xLabel, yLabel, legendLoc, pathSaveGraph):
 
    #On trace nos differentes courbes
     plt.plot(Y)
-    #plt.plot(Y2)
+    plt.plot(Y2)
    #titre du graph, legende...
     plt.title(title)
     plt.xlabel(xLabel)

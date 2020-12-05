@@ -31,6 +31,22 @@ Basé sur le réseau de neuronnes U-Net++.
   year={2018},
   publisher={Springer}
 }
+@misc{Yakubovskiy:2019,
+  Author = {Pavel Yakubovskiy},
+  Title = {Segmentation Models},
+  Year = {2019},
+  Publisher = {GitHub},
+  Journal = {GitHub repository},
+  Howpublished = {\url{https://github.com/qubvel/segmentation_models}}
+}
+@misc{ronneberger2015unet,
+      title={U-Net: Convolutional Networks for Biomedical Image Segmentation}, 
+      author={Olaf Ronneberger and Philipp Fischer and Thomas Brox},
+      year={2015},
+      eprint={1505.04597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
 ```
 
 ## Licence
