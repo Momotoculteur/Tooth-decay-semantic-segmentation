@@ -12,3 +12,4 @@ tqdm
 matplotlib
 opencv-python
 pandas
+Pillow

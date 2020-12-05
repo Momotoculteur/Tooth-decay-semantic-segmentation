@@ -14,7 +14,7 @@ def displayGraph(pathLog,pathSaveGraph):
     :param pathSaveGraph: chemin de destination pour sauvegarder nos 4 graphiques en jpg
     """
 
-    data = pd.read_csv(pathLog)
+    data = pd.read_csv(pathLog, sep=',')
     print(data)
     # split into input (X) and output (Y) variables
     plot(data['epoch'], data['binary_accuracy'], data['val_binary_accuracy'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)

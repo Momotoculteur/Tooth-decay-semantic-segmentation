@@ -1,28 +1,22 @@
 import numpy as np
-from glob import glob
 from utils import pairwise, getPaletteColors
-from skimage.segmentation import mark_boundaries
 from tqdm import tqdm
 import os
 import json
-import matplotlib.pyplot as plt
-from skimage import io
-from skimage.transform import resize
 from PIL import Image, ImageDraw
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
-import matplotlib.cm
 from skimage.draw import polygon2mask
-from scipy.ndimage.morphology import binary_fill_holes as imfill
 import cv2
-import sys
+import pandas as pd
 
 pathImgSrc = "data\\img\\ori"
 pathImgDst = "data\\img\\mask"
+pathDf = "data/label/dataset.csv"
 
 dirImgSrc = os.path.join(os.getcwd(), pathImgSrc)
 dirImgDst = os.path.join(os.getcwd(), pathImgDst)
 labels = os.path.join(os.getcwd(), "data\\label\\annotations.json")
 
+dataDf = []
 
 with open(labels) as json_file:
     data = json.load(json_file)
@@ -54,7 +48,17 @@ with open(labels) as json_file:
 
 
         cv2.imwrite(currentImgPathSave, mask)
+        '''
+        GEN NUMPY FILES
+        newName = currentImg.split(".")[0] + ".npy"
+        toSave = os.path.join(dirImgDst, newName)
+        np.save(toSave, mask)
+        '''
+
+        dataDf.append([os.path.join(pathImgSrc, currentImg),os.path.join(pathImgDst, currentImg)])
 
         # Afficher un mask
         #plt.imshow(mask)
         #plt.show()
+    df = pd.DataFrame(dataDf, columns=['x_path', 'y_path'], dtype=str)
+    df.to_csv(pathDf, sep=',')

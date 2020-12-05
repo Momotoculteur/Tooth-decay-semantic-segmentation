@@ -20,7 +20,6 @@ def hexaToRgb(codeHexa):
 
 def isMulticlassDataset():
     df = pd.read_json(CLASSES_DEFINICATION_PATH)
-    print(len(df))
     if(len(df)>1):
         return True
     else:
