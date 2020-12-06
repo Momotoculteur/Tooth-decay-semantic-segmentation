@@ -5,6 +5,16 @@ import matplotlib.pyplot as plt
 
 
 def trainGenerator(trainPath, imageDir, maskDir, batchSize, VAL_SPLIT, seed=1 ):
+    """
+
+    @param trainPath:
+    @param imageDir:
+    @param maskDir:
+    @param batchSize:
+    @param VAL_SPLIT:
+    @param seed:
+    @return:
+    """
     xTrain = ImageDataGenerator(validation_split=VAL_SPLIT)
     yTrain = ImageDataGenerator(validation_split=VAL_SPLIT)
 
@@ -34,6 +44,16 @@ def trainGenerator(trainPath, imageDir, maskDir, batchSize, VAL_SPLIT, seed=1 ):
 
 
 def validationGenerator(trainPath, imageDir, maskDir, batchSize, VAL_SPLIT, seed=1):
+    """
+
+    @param trainPath:
+    @param imageDir:
+    @param maskDir:
+    @param batchSize:
+    @param VAL_SPLIT:
+    @param seed:
+    @return:
+    """
     xValidation = ImageDataGenerator(validation_split=VAL_SPLIT)
     yValidation = ImageDataGenerator(validation_split=VAL_SPLIT)
 
@@ -64,6 +84,13 @@ def validationGenerator(trainPath, imageDir, maskDir, batchSize, VAL_SPLIT, seed
 
 
 def adjustData(img,mask, flag_multi_class=True):
+    """
+
+    @param img:
+    @param mask:
+    @param flag_multi_class:
+    @return:
+    """
     img = img / 255
     #mask = mask / 255
     #mask[mask > 0.5] = 1
