@@ -40,7 +40,7 @@ def launch():
     NUM_SAMPLES = len(os.listdir(os.path.join(os.getcwd(), TRAIN_PATH, IMG_DIR_NAME)))
     EPOCH = 999
 
-    DATASET = pd.read_csv("data\\label\\dataset.csv", sep=',', index_col=0)
+    DATASET = pd.read_csv("data\\label\\datasetAugmented.csv", sep=',', index_col=0)
 
     SAMPLE_TRAIN = int(NUM_SAMPLES * TRAINSIZE_RATIO)
     SAMPLE_VALID = int(NUM_SAMPLES * (1 - TRAINSIZE_RATIO))

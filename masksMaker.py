@@ -22,7 +22,6 @@ dirImgDst = os.path.join(os.getcwd(), pathImgDst)
 labels = os.path.join(os.getcwd(), "data\\label\\annotations.json")
 
 dataDf = []
-np.set_printoptions(threshold=sys.maxsize)
 with open(labels) as json_file:
     data = json.load(json_file)
 
@@ -67,7 +66,7 @@ with open(labels) as json_file:
         np.save(toSave, mask)
         '''
 
-        dataDf.append([os.path.join(pathImgSrc, currentImg),os.path.join(pathImgDst, currentImg)])
+        dataDf.append([os.path.join(pathImgSrc, currentImg),os.path.join(pathImgDst, currentMask)])
 
     df = pd.DataFrame(dataDf, columns=['x_path', 'y_path'], dtype=str)
     df.to_csv(pathDf, sep=',')
