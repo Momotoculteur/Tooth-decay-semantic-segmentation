@@ -13,3 +13,4 @@ matplotlib
 opencv-python
 pandas
 Pillow
+albumentations

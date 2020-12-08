@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+import sys
 CLASSES_DEFINICATION_PATH = 'data\\label\\classes.json'
 
 def pairwise(it):
@@ -36,26 +36,25 @@ def getClassesLabelList():
     return classes
 
 def getPaletteColors():
-    colors = []
+    # 0 : background
+    palette = [(0,0,0)]
+
     df = pd.read_json(CLASSES_DEFINICATION_PATH)
     df = df.sort_values(['id'], ascending=[True])
 
     for index, row in df.iterrows():
-
         r,g,b = hexaToRgb(row['color'])
-        colors.append({
-            'id': row['id'],
-            'colors': {
-                'r': r,
-                'g': g,
-                'b': b
-            },
-            'name': row['name']
-        })
-
-    return np.array(colors)
+        palette.append(
+            tuple((r, g, b))
+        )
+    palette.append((0,255,0))
+    print("________________________")
+    #print(palette[0])
+    return palette
 
 def mask2img(mask):
+    #Pour du Integer labeling
+    '''
     palette = {
         0: (0, 0, 0),
         1: (255, 0, 0),
@@ -63,6 +62,8 @@ def mask2img(mask):
         3: (0, 0, 255),
         4: (0, 255, 255),
     }
+    '''
+    palette = getPaletteColors()
     rows = mask.shape[0]
     cols = mask.shape[1]
     image = np.zeros((rows, cols, 3), dtype=np.uint8)
@@ -72,12 +73,35 @@ def mask2img(mask):
     return image
 
 
-def main():
-    #getPaletteColors()
-    getClassesLabelList()
+def mask2imgMultipleClasses(mask):
+    #pour du one hot encoding
+    '''
+    palette = {
+        0: (0, 0, 0),
+        1: (255, 0, 0),
+        2: (0, 255, 0),
+        3: (0, 0, 255),
+        4: (0, 255, 255),
+    }
+    '''
+    np.set_printoptions(threshold=sys.maxsize)
+    palette = getPaletteColors()
+    rows = mask.shape[0]
+    cols = mask.shape[1]
+    image = np.zeros((rows, cols, 3), dtype=np.uint8)
+    for j in range(rows):
+        for i in range(cols):
+            try:
+                image[j, i] = palette[mask[j, i]]
+            except IndexError:
+                pass
+                #print(mask[j, i])
+    return image
+
+
 
 if __name__ == '__main__':
     """
     # MAIN
     """
-    main()
+    getPaletteColors()
