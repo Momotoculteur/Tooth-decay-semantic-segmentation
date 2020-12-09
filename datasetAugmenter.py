@@ -19,7 +19,7 @@ N_IMG = len(os.listdir(DIR_IMG_SRC))
 N_AUG_PER_IMG = 0
 
 DATASET = pd.read_csv("data\\label\\dataset.csv", sep=',', index_col=0)
-pathDfAugmented = "data/label/datasetAugmented.csv"
+pathDfAugmented = "data\\label\\datasetAugmented.csv"
 
 DATASET_AUGMENTED = []
 
@@ -55,33 +55,9 @@ def launchAugmentation():
         A.RandomRotate90(p=0.5)
     ])
 
-    # A DELETE /!/ TEST ONLY /!/
-    N_AUG_PER_IMG = 5
-
-
-
-    '''
-        for id, imgName in tqdm(enumerate(os.listdir(DIR_IMG_SRC)), "Conversion : ", total=N_IMG):
-        maskName = imgName.split('.')[0]
-        maskName = maskName + MASK_FORMAT
-
-        image = cv2.imread(os.path.join(DIR_IMG_SRC,imgName), cv2.IMREAD_COLOR)
-        mask = cv2.imread(os.path.join(DIR_MASK_SRC,maskName), cv2.IMREAD_GRAYSCALE)
-
-        #for i in range(N_AUG_PER_IMG):
-            #maskNameFormat =
-
-        augmented = transform(image=image, mask=mask)
-
-        #visualize(image, mask, augmented['image'], augmented['mask'])
-        print(augmented['mask'].shape)
-    '''
-
-
     for index, row in tqdm(DATASET.iterrows(), total=DATASET.shape[0]):
         rawImgPath = row['x_path'].split('.')[0]
         rawMaskPath = row['y_path'].split('.')[0]
-        print(row['y_path'])
         baseImage = cv2.imread(row['x_path'], cv2.IMREAD_COLOR)
         baseMask = cv2.imread(row['y_path'], cv2.IMREAD_GRAYSCALE)
 
@@ -100,13 +76,17 @@ def launchAugmentation():
 
 
 
-    #df = pd.DataFrame(dataDf, columns=['x_path', 'y_path'], dtype=str)
+    df = pd.DataFrame(DATASET_AUGMENTED, columns=['x_path', 'y_path'], dtype=str)
+    globalDf = pd.concat([df, DATASET], ignore_index=True, sort=False, keys=['original', 'augmented'])
+
+    globalDf = globalDf.sample(frac=1).reset_index(drop=True)
+
     # merge dataset et dataset augmented
-    #df.to_csv(pathDfAugmented, sep=',')
+
+    globalDf.to_csv(pathDfAugmented, sep=',')
 
 if __name__ == "__main__":
-    #askInfos()
-    launchAugmentation()
+    askInfos()
 
 
 

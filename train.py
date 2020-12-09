@@ -7,6 +7,7 @@ with warnings.catch_warnings():
     import os
     from utils import getClassesLabelList, isMulticlassDataset
     import pandas as pd
+    from keras.optimizers import Adam
 
 
 def launch():
@@ -15,7 +16,7 @@ def launch():
     # HYPER PARAMS
     #
     ######################
-    BATCH_SIZE = 2
+    BATCH_SIZE = 16
     TRAINSIZE_RATIO = 0.8
     N_THREADS = 16
     CLASSES = getClassesLabelList()
@@ -37,14 +38,18 @@ def launch():
     DIR_TRAINED_MODEL = os.path.join(DIR_MODEL, MODEL_NAME)
     DIR_TRAINED_LOGS = os.path.join(DIR_LOGS, LOGS_FILE_NAME)
 
-    NUM_SAMPLES = len(os.listdir(os.path.join(os.getcwd(), TRAIN_PATH, IMG_DIR_NAME)))
+    #NUM_SAMPLES = len(os.listdir(os.path.join(os.getcwd(), TRAIN_PATH, IMG_DIR_NAME)))
     EPOCH = 999
 
     DATASET = pd.read_csv("data\\label\\datasetAugmented.csv", sep=',', index_col=0)
+    NUM_SAMPLES = len(DATASET)
+
 
     SAMPLE_TRAIN = int(NUM_SAMPLES * TRAINSIZE_RATIO)
     SAMPLE_VALID = int(NUM_SAMPLES * (1 - TRAINSIZE_RATIO))
 
+    print("TRAIN_SIZE " + str(len(DATASET[:SAMPLE_TRAIN])))
+    print("VAL_SIZE " + str(len(DATASET[SAMPLE_TRAIN:])))
 
 
 
@@ -69,9 +74,9 @@ def launch():
     # monitor='val_acc')
     # logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
     csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=False, separator=',')
-    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=10, mode='auto')
+    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=6, mode='auto')
     reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
-                                           patience=5, min_lr=1e-6)
+                                           patience=3, min_lr=1e-6)
 
     ######################
     #
@@ -79,12 +84,12 @@ def launch():
     #
     ######################
     # COMPILATION MODEL
-    model = Unet(backbone_name='vgg16',
-                 encoder_weights=None,
+    model = Unet(backbone_name='resnet50',
+                 encoder_weights='imagenet',
                  decoder_block_type='transpose',
                  classes=N_CLASSES,
                  activation=FINAL_ACTIVATION_LAYER)
-    model.compile(optimizer='Adam',
+    model.compile(optimizer=Adam(lr=1.0e-3),
                   loss=LOSS,
                   metrics=[METRICS])
 
@@ -113,12 +118,15 @@ def launch():
                                   targetSize=(256, 256),
                                   nClass=N_CLASSES)
 
+
+
+
     model.fit_generator(generator=trainGen,
                         validation_data=validationGen,
                         epochs=EPOCH,
-                        callbacks=[csv_logger, savemodelCallback, earlyStopping, reduceLearningrate],
+                        callbacks=[csv_logger, earlyStopping, reduceLearningrate],
                         #use_multiprocessing=True,
-                        #workers=16
+                        #workers=4
                         )
 
     # TRAIN NUMPY FILES
