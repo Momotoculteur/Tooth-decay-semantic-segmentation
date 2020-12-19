@@ -6,6 +6,9 @@ import time
 import matplotlib.pyplot as plt
 import cv2
 import sys
+from visualizer import visualize
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+import itertools
 
 """
 # Classe permettant de réaliser une prédiction sur une nouvelle donnée
@@ -17,10 +20,71 @@ def main():
     # On definit les chemins d'acces au différentes hyper parametre
     """
 
-    modelPath = '.\\result\\model\\model.h5'
-    imagePath = '.\\predict\\img1.jpg'
+    modelPath = 'C:\\model.h5'
+    imagePath = '.\\predict\\test1.jpg'
+    maskPath = '.\\predict\\mask1.png'
 
-    predict(modelPath, imagePath)
+    #predict(modelPath, imagePath)
+    predictNconfusion(modelPath, imagePath, maskPath)
+
+
+def predictNconfusion(modelPath, imagePath, maskPath):
+    image = Image.open(imagePath).convert('RGB')
+    img = image.resize(size=(256, 256))
+    img = np.asarray(img, dtype=np.float32) / 255.
+    print("START LOAD")
+    model = load_model(modelPath, compile=False)
+    print("END LOAD")
+
+    dimension = img.shape
+    img = img.reshape(1, dimension[0], dimension[1], dimension[2])
+
+    prediction = model.predict(img)
+    res = np.asarray(prediction[0]*100)
+    res[res >= 0.9] = 1
+    res[res <= 0.1] = 0
+    np.set_printoptions(threshold=sys.maxsize)
+    mask = Image.open(maskPath)
+    mask = mask.resize(size=(256, 256))
+
+    maskNp = np.asarray(mask)
+    #print(maskNp)
+    #visualize(image, mask)
+
+    res = res[:, :, 0]
+    print(maskNp.shape)
+    print(res.shape)
+    print(maskNp.dtype)
+    print(res.dtype)
+    res = res.astype(np.uint8)
+
+    test = confusion_matrix(maskNp.flatten(), res.flatten())
+    test = test.astype('float') / test.sum(axis=1)[:, np.newaxis]
+    #plot_confusion_matrix(clf, maskNp.flatten(), maskNp.flatten())
+
+    plt.figure()
+    cmap = plt.cm.Blues
+    classes = ['background', 'carrie']
+    title = 'Confusion matrix'
+    plt.imshow(test, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(2)
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
+
+    fmt = '.2f'
+    thresh = test.max() / 2.
+    for i, j in itertools.product(range(test.shape[0]), range(test.shape[1])):
+        plt.text(j, i, format(test[i, j], fmt), horizontalalignment="center",
+                 color="white" if test[i, j] > thresh else "black")
+
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.tight_layout()
+    plt.show()
+    plt.imshow(res)
+    plt.show()
 
 
 def predict(modelPath,imagePath):
