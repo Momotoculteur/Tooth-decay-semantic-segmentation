@@ -84,7 +84,7 @@ class DatasetLoader(keras.utils.Sequence):
             yTmp = np.expand_dims(yTmp, axis=-1)
 
             if isMulticlassDataset():
-                keras.utils.to_categorical(yTmp, num_classes=self.nClass)
+                yTmp = keras.utils.to_categorical(yTmp, num_classes=self.nClass)
 
             yTrain[i, ] = yTmp
 
