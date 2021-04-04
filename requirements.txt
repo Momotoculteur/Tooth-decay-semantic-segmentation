@@ -12,3 +12,6 @@ tqdm
 matplotlib
 opencv-python
 pandas
+Pillow
+albumentations
+scikit-learn
