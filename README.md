@@ -3,16 +3,67 @@
 ## Description
 Logiciel de détection, localisation & segmentation de carries sur des radiographies dentaires.  
   
-Basé sur le réseau de neuronnes U-Net++.  
+Basé sur le réseau de neurones U-Net++.  
 
+L'article complet du projet est disponible sur :  
+https://deeplylearning.fr/cours-pratiques-deep-learning/segmentation-semantique-dimages/
 
+## Informations
+
+### Dataset original
+Les images utilisées sont en noir et blanc (channel=1)
+
+### Data augmentation
+
+### Annotation
+Nous avons utilisé la version gratuite de SuperAnnotate pour labeliser nos données.
+Nous traçons pour chaque carrie présente sur une radio un polygone.
 
 ## Installation
+Testé seulement sur Python 3.6.12
+
 1. Cloner le répo :  
 `$ git clone https://github.com/Momotoculteur/Tooth-decay-semantic-segmentation.git`
 
 2. Installer les modules externes :  
 `pip install -r requirements.txt`
+   
+## Utilisation
+### Répo architecture
+```
+.
+├── data                
+│   └── img
+│        └── mask                 # Mask associé aux radiographies
+│        └── ori                  # Radiographie originale
+│   └── label           
+│        └── annotations.json     # Fichier contenant les annonations des images originale
+│        └── classes.json         # Contient la définition des classes
+│        └── config.json          # Fichier de configuration de SuperAnnotate
+├── masksMaker.py                 # Script permettant de générer les masques des images originales a partir du fichier annotations.json
+├── datasetLoader.py              # Generateur custom pour charger, transformer et envoyer au DNN
+├── datasetAugmenter.py           # Scripts de data augmentation 
+├── segmentation_models/..        # Contient divers modèles de réseaux de neurones 
+├── train.py                      # Script permettant d'entrainer le réseau
+├── utils.py                      # Contient diverses fonction d'aide à l'entrainement/visualization/etc.
+```
+
+
+### Création des masques
+Pour chaque image du dataset, nous récupérons les polygones représentant les carries via le fichier annotations.json.
+Les masques générés sont format PNG, évitant toute compression et perte de données.
+
+### Augmentation des données
+Requis : les masques des images originales doivent déjà être généré.
+Pour garantir de ne pas changer les informations contenues dans les images originales, nous n'utilisons que des déformations non
+destructives :
+- flip
+- rotation 90°
+- transpose
+
+### Entrainement
+
+### Prédiction
 
 ## Remerciements
 ```
