@@ -67,8 +67,8 @@ $ python masksMaker.py
 
 Un nouveau fichier va être crée sous ./data/label/dataset.csv. Il contient des couple (X,Y) qui seront consommé pour entrainer notre réseau
 de neurones. Il représente votre dataset en format text.  
-Pour chaque radiographie lui est associé son masque.
-![dataset.png](./src/img/dataset.png)
+Pour chaque radiographie lui est associé son masque.  
+![dataset.png](./src/img/dataset.PNG)
 
 ### Augmentation des données
 Requis : les masques des images originales doivent déjà être généré.
@@ -77,8 +77,8 @@ destructives :
 - flip vertical/horizontal
 - rotation 90°
 - transpose
-
-![dataug-script.png](./src/img/dataug-script.png)
+  
+![dataug-script.png](./src/img/dataug-script.PNG)
 
 Cette étape doit se faire après avoir crée l'ensemble de vos masques. Le dossier ./data/img/ori/ et ./data/img/mask/ doit donc contenir à cet instant là
 le même nombre d'élément
