@@ -1,4 +1,7 @@
 import warnings
+
+from losses import FocalTverskyLoss, DiceLoss, dice_coef_loss
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore",category=FutureWarning)
     from datasetLoader import DatasetLoader
@@ -10,13 +13,14 @@ with warnings.catch_warnings():
     from keras.optimizers import Adam
 
 
+
 def launch():
     ######################
     #
     # HYPER PARAMS
     #
     ######################
-    BATCH_SIZE = 16
+    BATCH_SIZE = 8
     TRAINSIZE_RATIO = 0.8
     N_THREADS = 16
     CLASSES = getClassesLabelList()
@@ -84,14 +88,14 @@ def launch():
     #
     ######################
     # COMPILATION MODEL
-    model = Unet(backbone_name='resnet50',
+    model = Unet(backbone_name='resnet18',
                  encoder_weights='imagenet',
-                 decoder_block_type='transpose',
+                 #decoder_block_type='transpose',
                  classes=N_CLASSES,
                  activation=FINAL_ACTIVATION_LAYER)
     model.compile(optimizer=Adam(lr=1.0e-3),
-                  loss=LOSS,
-                  metrics=[METRICS])
+                  loss=FocalTverskyLoss,
+                  metrics=[dice_coef_loss])
 
     ######################
     #

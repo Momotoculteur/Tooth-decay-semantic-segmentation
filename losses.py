@@ -1,5 +1,6 @@
 from keras import backend as K
 
+
 def dice_coef(y_true, y_pred, smooth=1):
     intersection = K.sum(K.abs(y_true * y_pred), axis=-1)
     return (2. * intersection + smooth) / (K.sum(K.square(y_true),-1) + K.sum(K.square(y_pred),-1) + smooth)
@@ -76,7 +77,7 @@ def TverskyLoss(targets, inputs, alpha=0.5, beta=0.5, smooth=1e-6):
 
     return 1 - Tversky
 
-def FocalTverskyLoss(targets, inputs, alpha=0.5, beta=0.5, gamma=1, smooth=1e-6):
+def FocalTverskyLoss(targets, inputs, alpha=0.7, beta=0.3, gamma=1.33, smooth=1e-6):
     # flatten label and prediction tensors
     inputs = K.flatten(inputs)
     targets = K.flatten(targets)
