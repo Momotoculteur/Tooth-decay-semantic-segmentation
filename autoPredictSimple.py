@@ -41,8 +41,8 @@ def predictNconfusion(modelPath, imagePath, maskPath):
 
     prediction = model.predict(img)
     res = np.asarray(prediction[0]*100)
-    res[res >= 0.9] = 1
-    res[res <= 0.1] = 0
+    res[res >= 0.95] = 1
+    res[res < 0.95] = 0
     np.set_printoptions(threshold=sys.maxsize)
     mask = Image.open(maskPath)
     mask = mask.resize(size=(256, 256))
@@ -137,7 +137,7 @@ def predict(modelPath,imagePath):
     print(res.shape)
     # MULTICLASS
     #res = np.argmax(res, axis = 2)
-    res[res >= 0.9] = 255
+    res[res >= 0.95] = 255
     res[res <= 0.1] = 0
 
 

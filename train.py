@@ -1,4 +1,7 @@
 import warnings
+
+from losses import FocalTverskyLoss, DiceLoss, dice_coef_loss, dice_coef, lovasz_loss
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore",category=FutureWarning)
     from datasetLoader import DatasetLoader
@@ -10,13 +13,14 @@ with warnings.catch_warnings():
     from keras.optimizers import Adam
 
 
+
 def launch():
     ######################
     #
     # HYPER PARAMS
     #
     ######################
-    BATCH_SIZE = 16
+    BATCH_SIZE = 8
     TRAINSIZE_RATIO = 0.8
     N_THREADS = 16
     CLASSES = getClassesLabelList()
@@ -74,9 +78,9 @@ def launch():
     # monitor='val_acc')
     # logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
     csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=False, separator=',')
-    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=6, mode='auto')
+    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=15, mode='min')
     reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
-                                           patience=3, min_lr=1e-6)
+                                           patience=5, min_lr=1e-7)
 
     ######################
     #
@@ -84,14 +88,14 @@ def launch():
     #
     ######################
     # COMPILATION MODEL
-    model = Unet(backbone_name='resnet50',
+    model = Unet(backbone_name='resnext50',
                  encoder_weights='imagenet',
-                 decoder_block_type='transpose',
+                 #decoder_block_type='transpose',
                  classes=N_CLASSES,
                  activation=FINAL_ACTIVATION_LAYER)
-    model.compile(optimizer=Adam(lr=1.0e-3),
-                  loss=LOSS,
-                  metrics=[METRICS])
+    model.compile(optimizer=Adam(lr=1.0e-4),
+                  loss=FocalTverskyLoss,
+                  metrics=[dice_coef])
 
     ######################
     #
