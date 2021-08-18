@@ -128,7 +128,7 @@ def launch():
     model.fit_generator(generator=trainGen,
                         validation_data=validationGen,
                         epochs=EPOCH,
-                        callbacks=[csv_logger, earlyStopping, reduceLearningrate],
+                        callbacks=[csv_logger, earlyStopping, reduceLearningrate, savemodelCallback],
                         #use_multiprocessing=True,
                         #workers=4
                         )
