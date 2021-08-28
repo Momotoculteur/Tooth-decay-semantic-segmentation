@@ -36,7 +36,7 @@ def askInfos():
     if(int(newAugMultiplier) == (0 or 1)):
         askInfos()
 
-    print("~~ Nombre total après augmentation : " + str(N_IMG*int(newAugMultiplier)) + "\n")
+    print("~~ Nombre total après augmentation : " + str(N_IMG*(int(newAugMultiplier)+1)) + "\n")
     print("~~ Params OK ? o/n : ")
     confirm = input()
 

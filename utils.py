@@ -98,10 +98,8 @@ def mask2imgMultipleClasses(mask):
                 #print(mask[j, i])
     return image
 
-
-
 if __name__ == '__main__':
     """
     # MAIN
     """
-    getPaletteColors()
+    #getPaletteColors()
