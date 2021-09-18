@@ -117,7 +117,8 @@ def plot_roc_curve(y_true, y_pred, title):
     ax.set_ylabel('True Positive Rate')
     ax.set_title(title)
     ax.legend(loc="lower right")
-    plt.show()
+    #plt.show()
+    plt.savefig('./result/log/rocCurve/curve_{}.png'.format(title))
 
     print('fpr : {}'.format(fpr_keras))
     print('tpr : {}'.format(tpr_keras))
@@ -195,10 +196,12 @@ def plot_confusion_matrix(cm,
                      color="white" if cm[i, j] > thresh else "black")
 
 
-    plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label\naccuracy={:0.4f}; misclass={:0.4f}'.format(accuracy, misclass))
-    plt.show()
+    plt.tight_layout()
+
+    #plt.show()
+    plt.savefig('./result/log/confusionMatrix/matrix_{}.png'.format(title))
 
 if __name__ == '__main__':
     """

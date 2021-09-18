@@ -178,10 +178,14 @@ for group_type in SCORES['GROUP_TYPE']:
     matrix_data = confusion_matrix(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type])
     plot_confusion_matrix(cm=matrix_data, normalize=True, target_names=['Background', 'Carry'], title='Confusion Matrix for {}'.format(group_type), cmap=plt.cm.Blues)
 
-    tn, fp, fn, tp = confusion_matrix(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type]).ravel()
+    try:
+        tn, fp, fn, tp = confusion_matrix(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type]).ravel()
+    except:
+        pass
 
     sensivity = tp / (tp+fn)
     specificity = tn / (tn+fp)
 
     print("SENSIBILITE : {}".format(sensivity))
     print("SPECIFICITE : {}".format(specificity))
+    print("TN: {}, FP: {}, FN: {}, TP: {}".format(tn, fp, fn, tp))
