@@ -10,6 +10,14 @@ def dice_coef_loss(y_true, y_pred):
     return 1-dice_coef(y_true, y_pred)
 
 
+def np_dice_coef(y_true, y_pred, smooth=1):
+    #y_true_f = y_true.flatten()
+    #y_pred_f = y_pred.flatten()
+    intersection = np.sum(y_true * y_pred)
+    return ( (2. * intersection + smooth) /
+             (np.sum(y_true) + np.sum(y_pred) + smooth) )
+
+
 def jaccard_distance_loss(y_true, y_pred, smooth=100):
     intersection = K.sum(K.abs(y_true * y_pred), axis=-1)
     sum_ = K.sum(K.abs(y_true) + K.abs(y_pred), axis=-1)

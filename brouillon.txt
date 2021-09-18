@@ -1,0 +1,98 @@
+A tester
+
+loss: Focal Tversky
+metrics: Dice
+
+
+loss: lovazs hinge
+metrics: IoU/Jaccard
+
+
+
+
+
+# turns the 13-channel mask into a 1-channel image
+mask = np.argmax(y_pred, axis = 2)
+# MULTICLASS
+    #res = np.argmax(prediction[0], axis = 2)
+plt.imshow(image)
+plt.imshow(mask, alpha = .65)
+plt.savefig(arr = mask, fname = "results.png")
+plt.show()
+________________________________
+
+
+or like @VladislavAD, is you only want to display a single class over the image:
+
+plt.imshow(image)
+plt.imshow(y_pred[:, :, class_index], alpha = .65)
+plt.show()
+
+
+_________________________
+
+Matplotlib can't handle 13 channels image. You need to assign color to each class and then paint them on one RGB image.
+You can try something like this:
+
+colors = [(255,0,0),(0,255,0)] # etc, add 13 colors
+out_image = np.zeros_like(original_rgb_image)
+for i in range(classes):
+    class_mask = image[...,i] # get the layer of class
+    class_mask = np.stack((class_mask * colors[i][0], class_mask * colors[i][1],class_mask * colors[i][2]), axis=-1)
+    # you can simply add values but I don't use this approach with multiple classes
+    out_image = out_image + class_mask
+    # so if the above doesn't work you can use opencv addWeighted
+    out_image = cv2.addWeighted(out_image ,1.0,class_mask,0.7,0)
+# now you can plt.imshow(out_image)
+Also you can place copy of original image into out_image and get classes painted over original
+
+_________________________________
+
+@kjodha
+
+np.argmax(mask, axis = 2)
+
+This will give a you a single channel image, where each index has the class category value that was classified as.
+
+--------------------------------
+
+So multi-label, although sometime used as a synonom for multi-class is actually different. Multi-label is supposed to refer to a pixel (in this context), that can have more than one label. An example for multi-label image classification is an image being classified based on the clothing type, and the gender of the person wearing the clothing type (e.g. Red shirt and Man, Blue pants and Woman).
+
+Multi-class classification is just having more than two classes (background, class 1, class 2).
+
+# multiclass segmentation with non overlapping class masks (your classes + background)
+model = sm.Unet('resnet34', classes=3, activation='softmax')
+This refers to normal multi-class classification. I believe qubvel added the comment to inform users that yes, you do need to include the background class.
+
+# multiclass segmentation with independent overlapping/non-overlapping class masks
+model = sm.Unet('resnet34', classes=3, activation='sigmoid')
+Whereas this is showing that if you are doing a multi-label classification, then use a sigmoid activation function as opposed to a softmax, which, is counter-intuitive because you have multiple classes but because this is a multi-label problem this is your option.
+
+If you're just doing a multi-class classification you need to include the background as a class.
+
+
+
+--------
+A ajouter dans train.py
+CLASSES = ['lesion']
+# CLASSES = ['lesion', 'background]
+....
+# define network parameters
+n_classes = 1 if len(CLASSES) == 1 else (len(CLASSES) + 1)  # case for binary and multiclass segmentation
+activation = 'sigmoid' if n_classes == 1 else 'softmax'
+
+
+-------------------
+Generation des masks pour du multi class
+class_values = [
+ 0, # background
+ 1, # car
+ 2, # human
+ ... # etc..
+]
+n_classes = len(class_values)
+
+y_train = np.zeros((n_masks, h, w, n_classes), dtype='uint8')
+for i, mask in enumerate(masks):
+  for j, class_value in enumerate(class_values):
+     y_train[i, ..., j] = (mask == class_value).astype('uint8')

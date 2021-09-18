@@ -78,15 +78,15 @@ def launch():
                                         verbose=1,
                                         save_best_only=True,
                                         save_weights_only=False,
-                                        mode='max',
+                                        mode='min',
                                         period=1,
-                                        monitor='val_dice_coef')
+                                        monitor='val_loss')
     # monitor='val_acc')
     # logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
     csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=False, separator=',')
-    earlyStopping = EarlyStopping(verbose=1, monitor='val_dice_coef', min_delta=0, patience=5, mode='max')
-    reduceLearningrate = ReduceLROnPlateau(monitor='val_dice_coef', factor=0.1,
-                                           patience=3, min_lr=0.0001, mode='max', verbose=1)
+    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=5, mode='min')
+    reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
+                                           patience=3, min_lr=0.0001, mode='min', verbose=1)
 
     ######################
     #
@@ -94,7 +94,7 @@ def launch():
     #
     ######################
     # COMPILATION MODEL
-    model = Unet(backbone_name='resnet50',
+    model = Unet(backbone_name='resnet18',
                  encoder_weights='imagenet',
                  #decoder_block_type='transpose',
                  classes=N_CLASSES,
