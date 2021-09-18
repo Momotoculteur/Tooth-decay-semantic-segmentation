@@ -167,13 +167,21 @@ for image_name, images_values in annotations_def.items():
 ######  PLOT ROC/AUC CURVE #############
 '''
 for group_type in SCORES['GROUP_TYPE']:
+    print("=============  GROUPE {} =====================".format(group_type))
+
     plot_roc_curve(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type], group_type)
 
 
-    print('DICE {} : {}'.format(group_type, np_dice_coef(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type])))
+    print('DICE : {}'.format(np_dice_coef(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type])))
 
 
     matrix_data = confusion_matrix(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type])
     plot_confusion_matrix(cm=matrix_data, normalize=True, target_names=['Background', 'Carry'], title='Confusion Matrix for {}'.format(group_type), cmap=plt.cm.Blues)
 
+    tn, fp, fn, tp = confusion_matrix(SCORES['Y_TRUE'][group_type], SCORES['Y_PRED'][group_type]).ravel()
 
+    sensivity = tp / (tp+fn)
+    specificity = tn / (tn+fp)
+
+    print("SENSIBILITE : {}".format(sensivity))
+    print("SPECIFICITE : {}".format(specificity))

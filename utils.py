@@ -119,12 +119,9 @@ def plot_roc_curve(y_true, y_pred, title):
     ax.legend(loc="lower right")
     plt.show()
 
-    print('#######')
-    print(title)
     print('fpr : {}'.format(fpr_keras))
     print('tpr : {}'.format(tpr_keras))
     print('auc : {}'.format(auc_keras))
-    print('#######')
 
 
 def plot_confusion_matrix(cm,
@@ -170,6 +167,9 @@ def plot_confusion_matrix(cm,
     if cmap is None:
         cmap = plt.get_cmap('Blues')
 
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
     plt.figure(figsize=(8, 6))
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
@@ -180,8 +180,7 @@ def plot_confusion_matrix(cm,
         plt.xticks(tick_marks, target_names, rotation=45)
         plt.yticks(tick_marks, target_names)
 
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
 
 
     thresh = cm.max() / 1.5 if normalize else cm.max() / 2
