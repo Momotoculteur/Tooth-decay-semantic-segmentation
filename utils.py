@@ -203,6 +203,7 @@ def plot_confusion_matrix(cm,
     #plt.show()
     plt.savefig('./result/log/confusionMatrix/matrix_{}.png'.format(title))
 
+
 if __name__ == '__main__':
     """
     # MAIN
