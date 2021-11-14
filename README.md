@@ -16,6 +16,79 @@ Nous utilisons des images .JPG
 Pas besoin d'avoir des tailles spécifiques et identiques dans tout le dataset, car nous utilisons des fulls ConvNet DNN
 ![original.jgp](./src/img/original.JPG)
 
+On organise sous différents groupes :
++ **PM**: pre-molaire
++ **CP**: canine pre-molaire
++ **IC**: incisive canine
++ **I**: implant
++ **E**: enfant
++ **O**: orthodentie
+
+#### Dataset d'entrainement/validation
+```json
+{
+    "TOTAL": {
+        "TOTAL": 1100,
+        "PM": 725,
+        "CP": 151,
+        "IC": 160,
+        "I": 6,
+        "E": 46,
+        "O": 12
+    },
+    "NO_CARRY": {
+        "TOTAL": 545,
+        "PM": 360,
+        "CP": 87,
+        "IC": 73,
+        "I": 6,
+        "E": 7,
+        "O": 12
+    },
+    "CARRY": {
+        "TOTAL": 555,
+        "PM": 365,
+        "CP": 64,
+        "IC": 87,
+        "I": 0,
+        "E": 39,
+        "O": 0
+    }
+}
+```
+#### Dataset de test
+```json
+{
+    "TOTAL": {
+        "TOTAL": 275,
+        "PM": 180,
+        "CP": 37,
+        "IC": 40,
+        "I": 3,
+        "E": 12,
+        "O": 3
+    },
+    "NO_CARRY": {
+        "TOTAL": 148,
+        "PM": 87,
+        "CP": 27,
+        "IC": 27,
+        "I": 3,
+        "E": 1,
+        "O": 3
+    },
+    "CARRY": {
+        "TOTAL": 127,
+        "PM": 93,
+        "CP": 10,
+        "IC": 13,
+        "I": 0,
+        "E": 11,
+        "O": 0
+    }
+}
+```
+
 ### Data augmentation
 
 ### Annotation
@@ -74,9 +147,22 @@ Pour chaque radiographie lui est associé son masque.
 Requis : les masques des images originales doivent déjà être généré.
 Pour garantir de ne pas changer les informations contenues dans les images originales, nous n'utilisons que des déformations non
 destructives :
-- flip vertical/horizontal
-- rotation 90°
-- transpose
++ Compose
+  + OneOf (p=1)
+    + VerticalFlip (p=0.2)
+    + RandomRotate90 (p=0.2)
+    + HorizontalFlip (p=0.2)
+  + OneOf (p=1)
+    + MotionBlur (p=0.2)
+    + MedianBlur (p=0.2)
+    + Blur (p=0.2)
+    + GaussNoise (p=0.2)
+  + OneOf (p=1)
+    + RandomBrightnessContrast (p=0.2)
+    + CLAHE (p=0.2)
+    + RandomGamma (p=0.2)
+    + MultiplicativeNoise (p=0.2)
+
   
 ![dataug-script.png](./src/img/dataug-script.PNG)
 
@@ -93,6 +179,11 @@ $ python datasetAugmenter.py
 ```sh
 $ python train.py
 ```
+
+### Résultats
+#### Matrice de confusion
+#### ROC curve
+#### Métriques
 
 ### Prédiction
 ![prediction.png](./src/img/prediction.png)

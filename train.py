@@ -1,7 +1,7 @@
 import warnings
-
 from losses import FocalTverskyLoss, DiceLoss, dice_coef_loss, dice_coef, lovasz_loss
-
+from metrics import my_iou_metric, get_iou_vector
+from losses import Kaggle_IoU_Precision, mean_iou
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore",category=FutureWarning)
     from datasetLoader import DatasetLoader
@@ -25,9 +25,14 @@ def launch():
     N_THREADS = 16
     CLASSES = getClassesLabelList()
     N_CLASSES = 1 if not isMulticlassDataset() else (len(CLASSES) + 1)
+    print('NB CLASS ====> ' + str(N_CLASSES))
     FINAL_ACTIVATION_LAYER = 'sigmoid' if N_CLASSES == 1 else 'softmax'
+
+    ### OLD ###########
     LOSS = "binary_crossentropy" if N_CLASSES == 1 else "categorical_crossentropy"
     METRICS = "binary_accuracy" if N_CLASSES == 1 else "categorical_accuracy"
+    print('ACTI ====> ' + str(FINAL_ACTIVATION_LAYER))
+
 
     TRAIN_PATH = "data/img"
     IMG_DIR_NAME = "ori"
@@ -45,6 +50,7 @@ def launch():
     #NUM_SAMPLES = len(os.listdir(os.path.join(os.getcwd(), TRAIN_PATH, IMG_DIR_NAME)))
     EPOCH = 999
 
+    #DATASET = pd.read_csv("data\\label\\datasetAugmented.csv", sep=',', index_col=0)
     DATASET = pd.read_csv("data\\label\\datasetAugmented.csv", sep=',', index_col=0)
     NUM_SAMPLES = len(DATASET)
 
@@ -72,15 +78,15 @@ def launch():
                                         verbose=1,
                                         save_best_only=True,
                                         save_weights_only=False,
-                                        mode='auto',
+                                        mode='min',
                                         period=1,
-                                        monitor='val_binary_accuracy')
+                                        monitor='val_loss')
     # monitor='val_acc')
     # logsCallback = TensorBoard(log_dir=DIR_TRAINED_MODEL_LOGS, histogram_freq=0, write_graph=True, write_images=True)
     csv_logger = CSVLogger(DIR_TRAINED_LOGS, append=False, separator=',')
-    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=15, mode='min')
+    earlyStopping = EarlyStopping(verbose=1, monitor='val_loss', min_delta=0, patience=5, mode='min')
     reduceLearningrate = ReduceLROnPlateau(monitor='val_loss', factor=0.1,
-                                           patience=5, min_lr=1e-7)
+                                           patience=3, min_lr=0.0001, mode='min', verbose=1)
 
     ######################
     #
@@ -88,14 +94,19 @@ def launch():
     #
     ######################
     # COMPILATION MODEL
-    model = Unet(backbone_name='resnext50',
+    model = Unet(backbone_name='resnet18',
                  encoder_weights='imagenet',
                  #decoder_block_type='transpose',
                  classes=N_CLASSES,
                  activation=FINAL_ACTIVATION_LAYER)
-    model.compile(optimizer=Adam(lr=1.0e-4),
+    model.compile(optimizer=Adam(lr=0.01),
                   loss=FocalTverskyLoss,
                   metrics=[dice_coef])
+
+    #loss = FocalTverskyLoss,
+    #loss = lovasz_loss,
+    #metrics = [dice_coef])
+    #metrics = [mean_iou])
 
     ######################
     #
@@ -128,7 +139,7 @@ def launch():
     model.fit_generator(generator=trainGen,
                         validation_data=validationGen,
                         epochs=EPOCH,
-                        callbacks=[csv_logger, earlyStopping, reduceLearningrate],
+                        callbacks=[csv_logger, earlyStopping, reduceLearningrate, savemodelCallback],
                         #use_multiprocessing=True,
                         #workers=4
                         )
