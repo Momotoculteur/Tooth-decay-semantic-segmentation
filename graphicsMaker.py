@@ -17,7 +17,7 @@ def displayGraph(pathLog,pathSaveGraph):
     data = pd.read_csv(pathLog, sep=',')
     print(data)
     # split into input (X) and output (Y) variables
-    plot(data['epoch'], data['dice_coef_loss'], data['val_dice_coef_loss'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
+    plot(data['epoch'], data['dice_coef'], data['val_dice_coef'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
     #plot(data['epoch'], data['binary_accuracy'], 'Accuracy metrics', 'Epoch', 'Accuracy', 'upper left',pathSaveGraph)
     plot(data['epoch'], data['loss'], data['val_loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)
     #plot(data['epoch'], data['loss'], 'Loss metrics', 'Epoch', 'Loss', 'upper left',pathSaveGraph)

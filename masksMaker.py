@@ -27,6 +27,7 @@ with open(labels) as json_file:
 
     # Pour chaque radio
     for id, currentImg in tqdm(enumerate(os.listdir(dirImgSrc)), "Conversion : ", total=len(os.listdir(dirImgSrc))):
+        at_least_one_carry = False
         currentImgPath = os.path.join(dirImgSrc, currentImg)
         currentMask = currentImg.split('.')[0]
         currentMask = currentMask + MASK_FORMAT
@@ -42,6 +43,7 @@ with open(labels) as json_file:
         for item in data[currentImg]:
             # points de type polygon ou autre
             if (item['type'] == "polygon"):
+                at_least_one_carry = True
                 res = []
                 for a, b in pairwise(item['points']):
                     res.append((b, a))
@@ -66,7 +68,7 @@ with open(labels) as json_file:
         np.save(toSave, mask)
         '''
 
-        dataDf.append([os.path.join(pathImgSrc, currentImg),os.path.join(pathImgDst, currentMask)])
+        dataDf.append([os.path.join(pathImgSrc, currentImg), os.path.join(pathImgDst, currentMask), currentImg, at_least_one_carry])
 
-    df = pd.DataFrame(dataDf, columns=['x_path', 'y_path'], dtype=str)
+    df = pd.DataFrame(dataDf, columns=['x_path', 'y_path', 'img_name', 'at_least_one_carry'], dtype=str)
     df.to_csv(pathDf, sep=',')
