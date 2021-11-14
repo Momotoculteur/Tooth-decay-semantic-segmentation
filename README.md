@@ -224,6 +224,6 @@ $ python train.py
 ```
 
 ## Licence
-Copyright (c) 2020 Bastien MAURICE & Dr.Van-Hoan NGUYEN
+Copyright (c) 2021 Bastien MAURICE & Dr.Van-Hoan NGUYEN
 
 This project is licensed under the terms of the MIT [license](LICENSE).
