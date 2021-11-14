@@ -7,7 +7,7 @@
 | 5. | 1089   |5|6534|C[Flip(0.5)/Transpose(0.5)/RRotate90(0.5)]|Dice| 0.99568   |FocalTverskyLoss |0.8485 | 15   | unet | resnet50 | imageNet   | Adam | 0.01 | pat:5 // minDelta: 0 | pat:3 // minLr:0.0001 |       |
 | 6. | 1089   |5|6534|C[Flip(0.5)/Transpose(0.5)/RRotate90(0.5)]|Dice | 0.9958   |FocalTverskyLoss |0.55126 | 30   | unet | resnet50 | imageNet   | Adam | 0.01 | pat:5 // minDelta: 0 | pat:3 // minLr:0.0001 |  callback loss based (before Dice)     |
 | 7. | 1089   |5|6534|C[Flip(0.5)/Transpose(0.5)/RRotate90(0.5)]|Dice | 0.9958   |FocalTverskyLoss |0.5211 | 35   | unet | resnet18 | imageNet   | Adam | 0.01 | pat:5 // minDelta: 0 | pat:3 // minLr:0.0001 |  callback loss based (before Dice)     |
-| 8 | 1089   |18(onlyCarry)|11090|C[]|Dice | 0.9938   |FocalTverskyLoss | 0.3320  |  30  | unet | resnet18 | imageNet   | Adam | 0.01 | pat:5 // minDelta: 0 | pat:3 // minLr:0.0001 |  callback loss based (before Dice)     | Test première vrai data aug |
+| 8 | 1089   |18(onlyCarry)|11090|C[]|Dice | 0.9938   |FocalTverskyLoss | 0.3320  |  30  | unet | resnet18 | imageNet   | Adam | 0.01 | pat:5 // minDelta: 0 | pat:3 // minLr:0.0001 |  Test première vrai data aug     | 
 
 
 

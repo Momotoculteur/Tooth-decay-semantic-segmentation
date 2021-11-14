@@ -147,7 +147,7 @@ for image_name, images_values in annotations_def.items():
 
     # VIZUALIIIIIZE
     # print(plot_best_iou_threshold(mask_resize, res[:,:,0]))
-    # visualize(res, toSave_resized)
+    visualize(res, toSave_resized)
 
     '''
     ######  CALCULATE SCORES #############
