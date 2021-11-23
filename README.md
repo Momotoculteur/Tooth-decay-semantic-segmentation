@@ -93,7 +93,7 @@ On organise sous différents groupes :
 
 ### Annotation
 Nous avons utilisé la version gratuite de SuperAnnotate pour labeliser nos données.
-Nous traçons pour chaque carrie présente sur une radio un polygone.
+Nous traçons pour chaque carrie présente sur une radio un polygone.  
 ![annotate.png](./src/img/annotate.png)
 
 ## Installation
