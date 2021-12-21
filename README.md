@@ -8,7 +8,7 @@ Basé sur le réseau de neurones U-Net++.
 L'article complet du projet est disponible sur :  
 https://deeplylearning.fr/cours-pratiques-deep-learning/segmentation-semantique-dimages/
 
-La thèse est disponible sur :
+La thèse est disponible sur :  
 https://dumas.ccsd.cnrs.fr/MEM-UNIV-BORDEAUX/dumas-03451688
 
 ## Informations
